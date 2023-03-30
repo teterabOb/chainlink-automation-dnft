@@ -1,0 +1,13 @@
+{
+	"name": "Platzi dNFT Second Level",
+    "description": "Dynamic NFT para el Ethereum Developer Program Platzi", 
+    "external_url": "https://platzi.com/cursos/ethereum-developer-program/", 
+    "image": "https://ipfs.io/ipfs/QmVFL29Za5cVn6nEyQCdpwgpEG8VH2Sgu1MKnYZ1PKXC7i/state_1.png",   
+    "attributes": [ 
+		{
+            "trait-type": "Status",
+            "value": "Second"
+        }
+    ] 
+  }
+  
