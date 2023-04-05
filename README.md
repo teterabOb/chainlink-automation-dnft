@@ -1,3 +1,3 @@
-# Chainlink Automation - Dynamic NFT con Platzi
+# Chainlink Automation - Dynamic NFT
 
 Tarea - TBA
