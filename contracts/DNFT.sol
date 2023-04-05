@@ -8,7 +8,7 @@ import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
 
 // Una vez el contrato se despliega tenemos que
 // ejecutar la funcion safeMint con tu address
-contract PlatziDNFT is AutomationCompatibleInterface, ERC721, ERC721URIStorage  {
+contract DNFT is AutomationCompatibleInterface, ERC721, ERC721URIStorage  {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
