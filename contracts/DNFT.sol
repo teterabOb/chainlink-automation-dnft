@@ -16,13 +16,7 @@ contract DNFT is AutomationCompatibleInterface, ERC721, ERC721URIStorage  {
     uint interval;
     uint lastTimeStamp;
 
-    enum Status{
-        First,
-        Second,
-        Theird
-    }
-
-    mapping (uint256 => Status) nftStatus;
+    mapping (uint256 => uint256 ) nftStatus; //mapping(tokenId => status)
 
     //Estos valores sonn estaticos pero el NFT ira apuntando
     // a cualquier de estos valores a medida que va evolucionando
@@ -53,7 +47,7 @@ contract DNFT is AutomationCompatibleInterface, ERC721, ERC721URIStorage  {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);      
-        nftStatus[tokenId] = Status.First;  
+        nftStatus[tokenId] = 0;  
     }
 
     function updateAllNFTs() public {
@@ -64,33 +58,16 @@ contract DNFT is AutomationCompatibleInterface, ERC721, ERC721URIStorage  {
     }
 
     function updateStatus(uint256 _tokenId) public {
-        uint256 currentStatus = getNFTLevel(_tokenId);
-
-        if(currentStatus == 0){
-             nftStatus[_tokenId] = Status.Second; 
-        }
-        else if(currentStatus == 1){
-             nftStatus[_tokenId] = Status.Theird; 
-        }
-        else if(currentStatus == 2){
-            nftStatus[_tokenId] = Status.First;
-        }
+        nftStatus[_tokenId] = (nftStatus[_tokenId] + 1) % IpfsUri.length;
     }
 
     // helper functions
-    function getNFTStatus(uint256 _tokenId) public view returns(Status){
-        Status status = nftStatus[_tokenId];
-        return status;
-    }
-
-    function getNFTLevel(uint256 _tokenId) public view returns(uint256){
-        Status statusIndex = nftStatus[_tokenId];
-        return uint(statusIndex);
+    function getNFTStatus(uint256 _tokenId) public view returns(uint256){
+        return nftStatus[_tokenId];
     }
 
     function getUriByLevel(uint256 _tokenId) public view returns(string memory){
-        Status statusIndex = nftStatus[_tokenId];
-        return IpfsUri[uint(statusIndex)];
+        return IpfsUri[nftStatus[_tokenId]];
     }
 
     // The following functions are overrides required by Solidity.
