@@ -1,40 +1,35 @@
 // SPDX-License-Identifier: MIT
+// 0xF8B8FeCd37d9aA5417Bca18AdAb3e23e4DF77456 Total supply: 10
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
 
 // Una vez el contrato se despliega tenemos que
 // ejecutar la funcion safeMint con tu address
 contract DNFT is AutomationCompatibleInterface, ERC721, ERC721URIStorage  {
-    using Counters for Counters.Counter;
 
-    Counters.Counter private _tokenIdCounter;
-
+    uint256 counter;
+    uint256 totalSupply;
     uint interval;
     uint lastTimeStamp;
 
-    enum Status{
-        First,
-        Second,
-        Theird
-    }
-
-    mapping (uint256 => Status) nftStatus;
+    mapping (uint256 => uint256 ) nftStatus; //mapping(tokenId => status)
 
     //Estos valores sonn estaticos pero el NFT ira apuntando
     // a cualquier de estos valores a medida que va evolucionando
     string[] IpfsUri = [
-        "https://ipfs.io/ipfs/Qme4bYrKTb6GQGawbUbtorxRQRb4xmPJ4ytdn6mvrFwHDG/state_0.json",
-        "https://ipfs.io/ipfs/Qme4bYrKTb6GQGawbUbtorxRQRb4xmPJ4ytdn6mvrFwHDG/state_1.json",
-        "https://ipfs.io/ipfs/Qme4bYrKTb6GQGawbUbtorxRQRb4xmPJ4ytdn6mvrFwHDG/state_2.json"
+        "https://ipfs.io/ipfs/QmWXJsTejP4688dZferHR475uUPk1aXF23MJLZSUPjhvcK/state_0.json",
+        "https://ipfs.io/ipfs/QmWXJsTejP4688dZferHR475uUPk1aXF23MJLZSUPjhvcK/state_1.json",
+        "https://ipfs.io/ipfs/QmWXJsTejP4688dZferHR475uUPk1aXF23MJLZSUPjhvcK/state_2.json"
     ];
 
-    constructor(uint _interval) ERC721("dNFT", "PdNFT") {
+    constructor(uint _totalSupply, uint _interval) ERC721("dNFT", "AR131") {
         interval = _interval;
         lastTimeStamp = block.timestamp;
+        totalSupply = _totalSupply;
+        counter = 0;
     }
 
     function checkUpkeep(bytes calldata /* checkData */) external view override returns (bool upkeepNeeded, bytes memory /* performData */) {
@@ -44,53 +39,34 @@ contract DNFT is AutomationCompatibleInterface, ERC721, ERC721URIStorage  {
     function performUpkeep(bytes calldata /* performData */) external override  {        
         if ((block.timestamp - lastTimeStamp) > interval ) {
             lastTimeStamp = block.timestamp;
-
             updateAllNFTs();            
         }        
     }
 
     function safeMint(address to) public {
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
-        _safeMint(to, tokenId);      
-        nftStatus[tokenId] = Status.First;  
+        require(counter<totalSupply,"No es posible mintear mas tokens");
+        _safeMint(to, counter);
+        nftStatus[counter] = 0; 
+        counter ++;   
     }
 
     function updateAllNFTs() public {
-        uint counter = _tokenIdCounter.current();
         for(uint i = 0; i < counter; i++){
             updateStatus(i);
         }
     }
 
     function updateStatus(uint256 _tokenId) public {
-        uint256 currentStatus = getNFTLevel(_tokenId);
-
-        if(currentStatus == 0){
-             nftStatus[_tokenId] = Status.Second; 
-        }
-        else if(currentStatus == 1){
-             nftStatus[_tokenId] = Status.Theird; 
-        }
-        else if(currentStatus == 2){
-            nftStatus[_tokenId] = Status.First;
-        }
+        nftStatus[_tokenId] = (nftStatus[_tokenId] + 1) % IpfsUri.length;
     }
 
     // helper functions
-    function getNFTStatus(uint256 _tokenId) public view returns(Status){
-        Status status = nftStatus[_tokenId];
-        return status;
-    }
-
-    function getNFTLevel(uint256 _tokenId) public view returns(uint256){
-        Status statusIndex = nftStatus[_tokenId];
-        return uint(statusIndex);
+    function getNFTStatus(uint256 _tokenId) public view returns(uint256){
+        return nftStatus[_tokenId];
     }
 
     function getUriByLevel(uint256 _tokenId) public view returns(string memory){
-        Status statusIndex = nftStatus[_tokenId];
-        return IpfsUri[uint(statusIndex)];
+        return IpfsUri[nftStatus[_tokenId]];
     }
 
     // The following functions are overrides required by Solidity.
@@ -109,5 +85,8 @@ contract DNFT is AutomationCompatibleInterface, ERC721, ERC721URIStorage  {
         returns (string memory)
     {
         return getUriByLevel(tokenId);
+    }
+    function getMinted()public view returns(uint256){
+        return counter;
     }
 }
