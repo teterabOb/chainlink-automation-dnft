@@ -16,20 +16,20 @@ contract DNFT is AutomationCompatibleInterface, ERC721, ERC721URIStorage  {
     uint interval;
     uint lastTimeStamp;
 
-    enum Status{
-        First,
-        Second,
-        Theird
+    enum Estado{
+        Primero,
+        Segundo,
+        Tercero
     }
 
-    mapping (uint256 => Status) nftStatus;
+    mapping (uint256 => Estado) nftEstado;
 
     //Estos valores sonn estaticos pero el NFT ira apuntando
     // a cualquier de estos valores a medida que va evolucionando
     string[] IpfsUri = [
-        "https://ipfs.io/ipfs/Qme4bYrKTb6GQGawbUbtorxRQRb4xmPJ4ytdn6mvrFwHDG/state_0.json",
-        "https://ipfs.io/ipfs/Qme4bYrKTb6GQGawbUbtorxRQRb4xmPJ4ytdn6mvrFwHDG/state_1.json",
-        "https://ipfs.io/ipfs/Qme4bYrKTb6GQGawbUbtorxRQRb4xmPJ4ytdn6mvrFwHDG/state_2.json"
+        "https://ipfs.io/ipfs/QmXwonX72kD2rovfg4HEjohDaPaZNhjGuUtRGbG1fkWxjZ/primero.json",
+        "https://ipfs.io/ipfs/QmXwonX72kD2rovfg4HEjohDaPaZNhjGuUtRGbG1fkWxjZ/segundo.json",
+        "https://ipfs.io/ipfs/QmXwonX72kD2rovfg4HEjohDaPaZNhjGuUtRGbG1fkWxjZ/tercero.json"
     ];
 
     constructor(uint _interval) ERC721("dNFT", "PdNFT") {
@@ -53,52 +53,43 @@ contract DNFT is AutomationCompatibleInterface, ERC721, ERC721URIStorage  {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);      
-        nftStatus[tokenId] = Status.First;  
+        nftEstado[tokenId] = Estado.Primero;  
     }
 
     function updateAllNFTs() public {
         uint counter = _tokenIdCounter.current();
         for(uint i = 0; i < counter; i++){
-            updateStatus(i);
+            updateEstado(i);
         }
     }
 
-    function updateStatus(uint256 _tokenId) public {
-        uint256 currentStatus = getNFTLevel(_tokenId);
+    function updateEstado(uint256 _tokenId) public {
+        uint256 currentEstado = getEstadoNFT(_tokenId);
 
-        if(currentStatus == 0){
-             nftStatus[_tokenId] = Status.Second; 
+        if(currentEstado == 0){
+             nftEstado[_tokenId] = Estado.Segundo; 
         }
-        else if(currentStatus == 1){
-             nftStatus[_tokenId] = Status.Theird; 
+        else if(currentEstado == 1){
+             nftEstado[_tokenId] = Estado.Tercero; 
         }
-        else if(currentStatus == 2){
-            nftStatus[_tokenId] = Status.First;
+        else if(currentEstado == 2){
+            nftEstado[_tokenId] = Estado.Primero;
         }
     }
 
     // helper functions
-    function getNFTStatus(uint256 _tokenId) public view returns(Status){
-        Status status = nftStatus[_tokenId];
-        return status;
-    }
-
-    function getNFTLevel(uint256 _tokenId) public view returns(uint256){
-        Status statusIndex = nftStatus[_tokenId];
-        return uint(statusIndex);
+    function getEstadoNFT(uint256 _tokenId) public view returns(uint256){
+        Estado EstadoIndex = nftEstado[_tokenId];
+        return uint(EstadoIndex);
     }
 
     function getUriByLevel(uint256 _tokenId) public view returns(string memory){
-        Status statusIndex = nftStatus[_tokenId];
-        return IpfsUri[uint(statusIndex)];
+        Estado EstadoIndex = nftEstado[_tokenId];
+        return IpfsUri[uint(EstadoIndex)];
     }
 
     // The following functions are overrides required by Solidity.
-    //
-    function _burn(uint256 tokenId)
-        internal
-        override(ERC721, ERC721URIStorage)
-    {
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
     }
 
@@ -109,5 +100,14 @@ contract DNFT is AutomationCompatibleInterface, ERC721, ERC721URIStorage  {
         returns (string memory)
     {
         return getUriByLevel(tokenId);
+    }
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 }
