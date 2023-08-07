@@ -32,7 +32,7 @@ contract DNFT is AutomationCompatibleInterface, ERC721, ERC721URIStorage  {
         "https://ipfs.io/ipfs/QmXwonX72kD2rovfg4HEjohDaPaZNhjGuUtRGbG1fkWxjZ/tercero.json"
     ];
 
-    constructor(uint _interval) ERC721("dNFT", "PdNFT") {
+    constructor(uint _interval) ERC721("Solow Dynamic Buu", "SDB") {
         interval = _interval;
         lastTimeStamp = block.timestamp;
     }
