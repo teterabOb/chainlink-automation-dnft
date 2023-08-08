@@ -27,9 +27,9 @@ contract DNFT is AutomationCompatibleInterface, ERC721, ERC721URIStorage  {
     //Estos valores sonn estaticos pero el NFT ira apuntando
     // a cualquier de estos valores a medida que va evolucionando
     string[] IpfsUri = [
-        "https://ipfs.io/ipfs/QmVHuD34iW1puqVy7at5nwnhHEJ9Pfm8BWq26tAmiJEGg8/primero.json",
-        "https://ipfs.io/ipfs/QmVHuD34iW1puqVy7at5nwnhHEJ9Pfm8BWq26tAmiJEGg8/segundo.json",
-        "https://ipfs.io/ipfs/QmVHuD34iW1puqVy7at5nwnhHEJ9Pfm8BWq26tAmiJEGg8/tercero.json"
+        "https://ipfs.io/ipfs/QmRyokpe2C1MeCY5WontGp5Bgw7R3DKSQBZq7A7rnuTJAj/primero.json",
+        "https://ipfs.io/ipfs/QmRyokpe2C1MeCY5WontGp5Bgw7R3DKSQBZq7A7rnuTJAj/segundo.json",
+        "https://ipfs.io/ipfs/QmRyokpe2C1MeCY5WontGp5Bgw7R3DKSQBZq7A7rnuTJAj/tercero.json"
     ];
 
     constructor(uint _interval) ERC721("Solow Dynamic Buu", "SDB") {
