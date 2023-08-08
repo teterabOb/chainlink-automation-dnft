@@ -13,8 +13,8 @@ contract DNFT is AutomationCompatibleInterface, ERC721, ERC721URIStorage  {
 
     Counters.Counter private _tokenIdCounter;
 
-    uint interval;
-    uint lastTimeStamp;
+    uint public interval;
+    uint public lastTimeStamp;
 
     enum Estado{
         Primero,
@@ -27,9 +27,9 @@ contract DNFT is AutomationCompatibleInterface, ERC721, ERC721URIStorage  {
     //Estos valores sonn estaticos pero el NFT ira apuntando
     // a cualquier de estos valores a medida que va evolucionando
     string[] IpfsUri = [
-        "https://ipfs.io/ipfs/QmXwonX72kD2rovfg4HEjohDaPaZNhjGuUtRGbG1fkWxjZ/primero.json",
-        "https://ipfs.io/ipfs/QmXwonX72kD2rovfg4HEjohDaPaZNhjGuUtRGbG1fkWxjZ/segundo.json",
-        "https://ipfs.io/ipfs/QmXwonX72kD2rovfg4HEjohDaPaZNhjGuUtRGbG1fkWxjZ/tercero.json"
+        "https://ipfs.io/ipfs/Qmd2uUoe9dxnXjj5fH6kg66SjsYfGrk3paA4pTh7gkCwq8/primero.json",
+        "https://ipfs.io/ipfs/Qmd2uUoe9dxnXjj5fH6kg66SjsYfGrk3paA4pTh7gkCwq8/segundo.json",
+        "https://ipfs.io/ipfs/Qmd2uUoe9dxnXjj5fH6kg66SjsYfGrk3paA4pTh7gkCwq8/tercero.json"
     ];
 
     constructor(uint _interval) ERC721("Solow Dynamic Buu", "SDB") {
